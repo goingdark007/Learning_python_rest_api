@@ -1,4 +1,5 @@
 import requests
+import pandas as pd
 
 url = "https://api.open-meteo.com/v1/forecast"
 
@@ -42,8 +43,17 @@ try:
         # Process hourly data. The order of variables needs to be the same as requested.
         # Getting only the hourly weather dictionary from the json
         hourly = data['hourly']
-        
 
+        # Creating a DataFrame from the hourly data to show them as a tabular data
+        hourly_dataframe = pd.DataFrame(hourly)
+        print('\nHourly data\n',hourly_dataframe)
+
+        # Process daily data
+        daily = data['daily']
+
+        # Creating a DataFrame from the daily data to show them as a tabular data
+        daily_dataframe = pd.DataFrame(daily)
+        print('\nDaily data\n',daily_dataframe)
 
     else:
         # if there is any other error it will show the status code and error message
