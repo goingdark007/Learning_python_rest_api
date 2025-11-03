@@ -34,16 +34,47 @@ def convert(value):
 
     if last_edited == entry_usd:
 
-        f_val = entry_usd.get()
+        usd_value = entry_usd.get()
 
-        #if f_val:
+        if usd_value:
+
+            try:
+
+                # float() converts the string to decimal number
+                bdt_value = float(usd_value) * value
+                # clears the entry widgets previous texts
+                entry_bdt.delete(0, tk.END)
+                # inserts the new value or updated value in the widget
+                entry_bdt.insert(0, f"{bdt_value:.2f}")  # using f string :.2f takes two decimal value
+                # if string is entered then ValueError happens and this code runs
+            except ValueError:
+                entry_bdt.delete(0, tk.END)
+                # Clears previous text in the entry widget and inserts Error
+                entry_bdt.insert(0, "Error")
+
+    elif last_edited == entry_bdt:
+
+        bdt_value = entry_bdt.get()
+
+        if bdt_value:
+
+            try:
+
+                usd_value = float(bdt_value) / value
+                entry_usd.delete(0, tk.END)
+                entry_usd.insert(0, f"{usd_value:.2f}")
+                # if string is entered then ValueError happens and this code runs
+            except ValueError:
+                entry_usd.delete(0, tk.END)
+                # Clears previous text in the entry widget and inserts Error
+                entry_usd.insert(0, "Error")
     
 
 def get_convertion_rate():
 
     try:
 
-        response = requests.get(url, params=query_params)
+        response = requests.get(url, params=query_params, timeout= 5)
         response.raise_for_status() # Raises an HTTPError for bad codes
         data = response.json()
         convertion_rate = data['result']['BDT']
@@ -89,7 +120,7 @@ entry_usd = tk.Entry(
 # Creating a label widget to show the text `F
 lbl_f = tk.Label(
     master= frmList[0],
-    text= '`F',
+    text= 'USD',
     height = 5,
     width = 3
 )
@@ -114,7 +145,7 @@ entry_bdt = tk.Entry(
 # Creating another label widget to show the output
 lbl_c = tk.Label(
     master = frmList[2],
-    text = '`C',
+    text = 'BDT',
     height = 5,
     width = 3
 )
@@ -139,8 +170,3 @@ lbl_c.pack()
 
 # .mainloop() runs the gui
 window.mainloop()
-
-# usd_amount = 123
-# print(f'123 dollars is {usd_amount * convertion_rate} Taka')
-# bdt_amount = 4500
-# print(f'4500 taka is {bdt_amount / convertion_rate} dollars')
